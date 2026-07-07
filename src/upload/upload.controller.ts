@@ -18,10 +18,18 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 @Controller('upload')
 export class UploadController {
   constructor(private readonly configService: ConfigService) {
+    const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
+    const apiKey = this.configService.get<string>('CLOUDINARY_API_KEY');
+    const apiSecret = this.configService.get<string>('CLOUDINARY_API_SECRET');
+
+    console.log(
+      `Cloudinary sozlamalari -> cloud_name: ${cloudName ? 'OK (' + cloudName + ')' : 'YO\'Q!'}, api_key: ${apiKey ? 'OK' : 'YO\'Q!'}, api_secret: ${apiSecret ? 'OK' : 'YO\'Q!'}`,
+    );
+
     cloudinary.config({
-      cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
-      api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
-      api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
     });
   }
 
@@ -77,8 +85,13 @@ export class UploadController {
       );
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
     }).catch((err) => {
+      // Bu qator xatoni har doim Render loglarida ko'rinadigan qiladi
+      console.error('CLOUDINARY UPLOAD ERROR:', err);
       throw new BadRequestException({
-        error: { message: 'Faylni yuklashda xatolik: ' + err.message },
+        error: {
+          message:
+            'Faylni yuklashda xatolik: ' + (err?.message || JSON.stringify(err)),
+        },
       });
     });
 
