@@ -108,9 +108,20 @@ Barcha endpoint'lar `/api` prefiksi bilan ishlaydi. 🔒 belgisi — JWT token
 ### Upload
 | Method | Endpoint | Body | Javob |
 |---|---|---|---|
-| POST 🔒 | `/upload` | `multipart/form-data`, field: `file` | `{ file: "http://.../uploads/<fayl>" }` |
+| POST 🔒 | `/upload` | `multipart/form-data`, field: `file` | `{ file: "https://res.cloudinary.com/.../adminschool/<fayl>" }` |
 
-Yuklangan fayllar (rasm/PDF) `/uploads/<fayl-nomi>` manzilida statik tarzda xizmat qiladi.
+Fayllar **Cloudinary**'ga yuklanadi (doimiy saqlanadi — Render/Vercel kabi
+serverlar qayta ishga tushganda fayllar o'chib ketmasligi uchun). Buning uchun
+`.env`da quyidagi 3 ta qiymat to'ldirilgan bo'lishi kerak:
+
+```
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+```
+
+Bu qiymatlarni [cloudinary.com](https://cloudinary.com)da bepul ro'yxatdan
+o'tib, Dashboard sahifasidan olasiz.
 
 ## 5. Loyiha tuzilishi
 
